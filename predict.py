@@ -35,7 +35,16 @@ if not new_text:
 
 # Get embedding and make prediction
 new_embedding = get_bert_embedding(new_text).reshape(1, -1)
+
+# Ensure correct feature shape before prediction
+if new_embedding.shape[1] != 768:
+    print(f"❌ Invalid embedding shape: {new_embedding.shape}. Expected (1, 768).")
+    exit()
+
 prediction = svm_model.predict(new_embedding)
 
 # Print result
-print("📰 FAKE News ❌" if prediction[0] == 1 else "✅ REAL News ✅")
+if prediction[0] == 1:
+    print("🚨 FAKE News ❌")
+else:
+    print("✅ REAL News ✅")
